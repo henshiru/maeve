@@ -254,6 +254,7 @@ module Mv
       when r<0
         @zoom /= ZOOM_STEP
       end
+      on_scale_changed
       @frame.refresh false,nil
     end
     def on_left_double_click evt
