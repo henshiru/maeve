@@ -95,8 +95,9 @@ module Mv
         @properties[:omega] = res[:omega]
       when SylphideProcessor::GPacketObserver
         increment_packet_count :g
-        @properties[:itow] = observer.fetch_ITOW
         case ubx_id16(observer)
+        when 0x0101, 0x0102, 0x0108, 0x0111, 0x0112 # NAV-POSXXX, NAV-VELXXX
+          @properties[:itow] = observer.fetch_ITOW
         when 0x0130#space vehicle information
           satellites = []
           n_ch = observer.channels
@@ -113,7 +114,8 @@ module Mv
             end
           }
           @properties[:satellites] = satellites
-        when 0x0210
+        when 0x0210 # RXM-RAW
+          @properties[:itow] = observer.fetch_ITOW
           @properties[:num_sv] = observer.num_of_sv
         end
       when SylphideProcessor::FPacketObserver
